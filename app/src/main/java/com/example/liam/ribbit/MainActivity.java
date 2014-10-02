@@ -14,13 +14,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.util.Log;
 
 import com.parse.ParseAnalytics;
+import com.parse.ParseUser;
 
 import java.util.Locale;
 
 
 public class MainActivity extends Activity implements ActionBar.TabListener {
+
+    public static final String TAG = MainActivity.class.getSimpleName();
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -44,10 +48,16 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 
         ParseAnalytics.trackAppOpened(getIntent());
 
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if(currentUser == null) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        } else {
+            Log.i(TAG, currentUser.getUsername());
+        }
+
 
         // Set up the action bar.
         final ActionBar actionBar = getActionBar();
